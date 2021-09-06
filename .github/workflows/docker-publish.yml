@@ -44,7 +44,7 @@ jobs:
             command: |
               sudo docker-compose  -f /home/ubuntu/django-demo/docker-compose.yml pull 
               sudo docker-compose -f /home/ubuntu/django-demo/docker-compose.yml down
-              sudo docker-compose -f /home/ubuntu/django-demo/docker-compose.yml up
+              sudo docker-compose -f /home/ubuntu/django-demo/docker-compose.yml up -d
 #   scp-files-job:
 #     runs-on: ubuntu-latest
 #     steps:
