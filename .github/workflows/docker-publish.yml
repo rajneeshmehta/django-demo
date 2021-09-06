@@ -35,30 +35,30 @@ jobs:
         -
           name: Image digest
           run: echo ${{ steps.docker_build.outputs.digest }}
-  scp-files-job:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: a-was/scp-action@v1
-        with:
-          host: ${{ secrets.REMOTE_HOST }}
-          user: ${{ secrets.REMOTE_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          destination: '~/github/'
-  ansible-playbook:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Run playbook
-        uses: dawidd6/action-ansible-playbook@v2
-        with:
-          # Required, playbook filepath
-          playbook: deploy.yml
-          # Optional, directory where playbooks live
-          directory: ./
-          # Optional, SSH private key
-          key: ${{secrets.SSH_PRIVATE_KEY}}
-          # Optional, literal inventory file contents
-          inventory: |
-            [all]
-            ec2-52-207-24-140.compute-1.amazonaws.com
+#   scp-files-job:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v2
+#       - uses: a-was/scp-action@v1
+#         with:
+#           host: ${{ secrets.REMOTE_HOST }}
+#           user: ${{ secrets.REMOTE_USER }}
+#           key: ${{ secrets.SSH_PRIVATE_KEY }}
+#           destination: '~/github/'
+#   ansible-playbook:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Run playbook
+#         uses: dawidd6/action-ansible-playbook@v2
+#         with:
+#           # Required, playbook filepath
+#           playbook: deploy.yml
+#           # Optional, directory where playbooks live
+#           directory: ./
+#           # Optional, SSH private key
+#           key: ${{secrets.SSH_PRIVATE_KEY}}
+#           # Optional, literal inventory file contents
+#           inventory: |
+#             [all]
+#             ec2-52-207-24-140.compute-1.amazonaws.com
 
