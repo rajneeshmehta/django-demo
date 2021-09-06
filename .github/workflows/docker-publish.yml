@@ -35,6 +35,16 @@ jobs:
         -
           name: Image digest
           run: echo ${{ steps.docker_build.outputs.digest }}
+        - name: Download new image and run new containers
+          uses: JimCronqvist/action-ssh@master
+          with:
+            hosts: 'ubuntu@ec2-52-207-24-140.compute-1.amazonaws.com'
+            privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
+            debug: false
+            command: |
+              sudo docker-compose  -f /home/ubuntu/django-demo/docker-compose.yml pull 
+              sudo docker-compose -f /home/ubuntu/django-demo/docker-compose.yml down
+              sudo docker-compose -f /home/ubuntu/django-demo/docker-compose.yml up
 #   scp-files-job:
 #     runs-on: ubuntu-latest
 #     steps:
