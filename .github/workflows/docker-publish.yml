@@ -9,29 +9,54 @@ on:
 
 jobs:
   docker:
+      runs-on: ubuntu-latest
+      steps:
+        -
+          name: Set up QEMU
+          uses: docker/setup-qemu-action@v1
+        -
+          name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v1
+        -
+          name: Login to DockerHub
+          uses: docker/login-action@v1 
+          with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
+        -
+          name: Build and push
+          id: docker_build
+          uses: docker/build-push-action@v2
+          with:
+            platforms: linux/arm64 #,linux/amd64
+            push: true
+            file: Dockerfile
+            tags: ${{ secrets.DOCKERHUB_USERNAME }}/django-demo:github
+        -
+          name: Image digest
+          run: echo ${{ steps.docker_build.outputs.digest }}
+  scp-files-job:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      -
-        name: Login to DockerHub
-        uses: docker/login-action@v1 
+      - uses: actions/checkout@v2
+      - uses: a-was/scp-action@v1
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      -
-        name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v2
+          host: ${{ secrets.REMOTE_HOST }}
+          user: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          destination: '~/github/'
+  
+      - name: Run playbook
+        uses: dawidd6/action-ansible-playbook@v2
         with:
-          platforms: linux/arm64 #,linux/amd64
-          push: true
-          file: Dockerfile
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/django-demo:github
-      -
-        name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+          # Required, playbook filepath
+          playbook: deploy.yml
+          # Optional, directory where playbooks live
+          directory: ./
+          # Optional, SSH private key
+          key: ${{secrets.SSH_PRIVATE_KEY}}
+          # Optional, literal inventory file contents
+          inventory: |
+            [all]
+            ec2-52-207-24-140.compute-1.amazonaws.com
+
