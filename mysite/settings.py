@@ -25,12 +25,13 @@ SECRET_KEY = 'django-insecure-3cccm0_i^f2tx0(0ek-3p2bw^%kiu=+t%_(@66z-1@7l(-smvb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["devops.aurigastore.com"]
+ALLOWED_HOSTS = ["devops.aurigastore.com","8000-harlequin-spider-s4gmkc62.ws-us15.gitpod.io"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'polls.apps.PollsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -105,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
