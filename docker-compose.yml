@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  nginx: 
+    image: nginx:stable-alpine
+    restart: always
+    ports:
+        - 80:80
+    volumes:
+      - ./nginx-conf:/etc/nginx/conf.d
+    depends_on: 
+        - backend
+  backend:
+    image: rajneeshmehta93/django-demo:github
+    restart: always
+    ports:
+      - 8000
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes: 
+    - /home/ubuntu/data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: example

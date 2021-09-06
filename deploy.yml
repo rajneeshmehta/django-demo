@@ -1,0 +1,18 @@
+---
+- hosts: ec2-52-207-24-140.compute-1.amazonaws.com
+  tasks:
+    - name: Delete previous running backend container
+      docker_compose:
+        project_name: demoSite
+        state: absent
+        services: 
+          - backend
+      become: true
+    - name: Pull new images and start new container
+      docker_compose:
+        project_name: demoSite
+        pull: true
+        restarted: yes
+        state: present
+      become: true
+...
