@@ -5,14 +5,17 @@ services:
     restart: always
     ports:
         - 80:80
+        - 443:443
     volumes:
       - ./nginx-conf:/etc/nginx/conf.d
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
     depends_on: 
         - backend
   backend:
     image: rajneeshmehta93/django-demo:github
     restart: always
-    ports:
+    expose:
       - 8000
   db:
     image: mysql
@@ -22,3 +25,11 @@ services:
     - /home/ubuntu/data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: example
+
+  certbot:
+    image: certbot/certbot:latest
+    restart: unless-stopped
+    volumes:
+        - ./docker/nginx/certbot/conf:/etc/letsencrypt
+        - ./docker/nginx/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"      
